@@ -49,3 +49,7 @@ Example:
   "distance_ratio": 0.05,
   "mpl_rcparam": {}
 ```
+
+## Report bugs
+
+If you find any bugs or things to be updated, please contact [us](kosuke.minamoto.s8@gmail.com).
