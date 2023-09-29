@@ -26,15 +26,15 @@
 ```
 
 * configure ファイル (json形式)
-  * directory: str \\
+  * directory: str  
     ObsPyで読める波形データのあるディレクトリ名
-  * channel_tbl: str \\
+  * channel_tbl: str  
     観測点リスト名
-  * components: list \\
+  * components: list  
     波形データの「obspy.trace.stats.channel」と一致する成分名のリスト
-  * line_colors: list \\
+  * line_colors: list  
     "components" と同じサイズのリストで, 対応した色で描画される
-  * normalize_type: str \\
+  * normalize_type: str  
     * "global_max": 読み込んだ全波形の最大値で規格化する
     * "None": 規格化されない
     * 上記以外: 各波形ごとに規格化される
