@@ -7,8 +7,11 @@
 
 ![pasteapp](/PasteApp.png)
 
-## Installation
+## Download
 
+```
+git clone https://github.com/KosukeMinamoto/PasteApp
+```
 
 ## Environment
 
@@ -39,8 +42,14 @@
     * "None": 規格化されない
     * 上記以外: 各波形ごとに規格化される
   
-  * mpl_rcparam: \\
+  * mpl_rcparam:  
     Matplotlib の rcParam を参照
+
+## Usage
+
+```
+python3 pasteup.py
+```
 
 ## Report bugs
 
