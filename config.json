@@ -1,0 +1,32 @@
+{
+  "directory": "./sac",
+  "channel_tbl": "station.list",
+  "components": ["VZ"],
+  "line_colors": ["gray"],
+  "normalize_type": "global_max",
+  "distance_ratio": 0.05,
+  "mpl_rcparam": {
+     "figure.figsize": [12, 10],
+      "lines.color" : "black",
+      "lines.linewidth": 0.1,
+      "lines.linestyle": "--",
+      "axes.grid" : "True",
+      "axes.grid.axis": "both",
+      "grid.color": "gray",
+      "grid.linewidth": 0.5,
+      "grid.alpha": 1,
+      "grid.linestyle": ":",
+      "font.family":"sans-serif",
+      "font.sans-serif": ["Arial"],
+      "font.size": 8,
+      "legend.edgecolor": "gray",
+      "legend.fancybox": "False",
+      "legend.framealpha": 1,
+      "xtick.direction": "in",
+      "xtick.major.width": 1.2,
+      "ytick.direction": "in",
+      "ytick.major.width": 1.2,
+      "savefig.dpi": 200,
+      "savefig.transparent": "True"
+  }
+}
