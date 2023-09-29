@@ -4,6 +4,8 @@
 
 This is a tool to make paste-up images of seismograms.
 
+@import "PasteApp.png"
+
 # Required
 
 You need to prepare these files;
