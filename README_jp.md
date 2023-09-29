@@ -10,10 +10,14 @@
 ## Installation
 
 
+## Environment
+
+* python >= 3.11
+(python < 3.9.6 では`tkinter`のバグがあります)
+
 ## Required
 
 * 観測点リスト
-
 以下の形式のリスト
 ```txt
 観測点名 緯度 経度 高度
@@ -22,7 +26,6 @@
 ```
 
 * configure ファイル (json形式)
-
   * directory: str
     ObsPyで読める波形データのあるディレクトリ名
   * channel_tbl: str
@@ -38,17 +41,6 @@
   
   * mpl_rcparam: 
     Matplotlib の rcParam を参照
-    
-Example:
-```txt
-  "directory": "./sac-data",
-  "channel_tbl": "station.list",
-  "components": ["VZ"],
-  "line_colors": ["gray"],
-  "normalize_type": "global_max",
-  "distance_ratio": 0.05,
-  "mpl_rcparam": {}
-```
 
 ## Report bugs
 
