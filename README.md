@@ -66,9 +66,9 @@ ObsPyで読める波形データのあるディレクトリ名
 "components" と同じサイズのリストで, 対応した色で描画される
 
 * normalize_type:  
-* "global_max": 読み込んだ全波形の最大値で規格化する
-* "None": 規格化されない
-* 上記以外: 各波形ごとに規格化される
+	* "global_max": 読み込んだ全波形の最大値で規格化する
+	* "None": 規格化されない
+	* 上記以外: 各波形ごとに規格化される
 
 * mpl_rcparam:  
 See [`matplotlib.rcParams`](https://matplotlib.org/stable/users/explain/customizing.html)
