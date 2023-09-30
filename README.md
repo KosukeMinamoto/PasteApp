@@ -21,7 +21,7 @@ git clone https://github.com/KosukeMinamoto/PasteApp
 
 python >= 3.10
 
-(python =< 3.9.6 では`tkinter`のバグがあります)
+(MacOSの場合, python =< 3.9.6 では`tkinter`のバグ)
 
 ```
 conda env create -f env.yml
