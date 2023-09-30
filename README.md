@@ -5,7 +5,7 @@
 
 地震波形のペーストアップを作成するためのpythonベースのGUIです. 
 
-![pasteapp](/PasteApp.png)
+![pasteapp](/pasteapp.png)
 
 ## Download
 
