@@ -53,4 +53,4 @@ python3 pasteup.py
 
 ## Report bugs
 
-If you find any bugs or things to be updated, please contact [us](kosuke.minamoto.s8@gmail.com).
+If you find any bugs or things to be updated, please contact [me](kosuke.minamoto.s8@gmail.com).
