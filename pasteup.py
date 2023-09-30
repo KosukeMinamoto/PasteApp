@@ -96,6 +96,7 @@ class PasteApp(tk.Frame):
 		self.fig, self.axes = plt.subplots(2,1)	
 		self.axes[0].xaxis.tick_top()
 		self.axes[0].yaxis.tick_right()
+		self.axes[1].yaxis.tick_right()
 		self.fig_canvas = FigureCanvasTkAgg(self.fig, self.main_frame)
 		self.toolbar = NavigationToolbar2Tk(self.fig_canvas, self.main_frame)
 		self.fig_canvas.get_tk_widget().pack()
