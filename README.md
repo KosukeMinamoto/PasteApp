@@ -21,15 +21,14 @@ git clone https://github.com/KosukeMinamoto/PasteApp
 
 python >= 3.10
 
-!!! warning python =< 3.9
-	python =< 3.9.6 では`tkinter`のバグがあります
+(python =< 3.9.6 では`tkinter`のバグがあります)
 
 ```
 conda env create -f env.yml
 ```
 
 ```
-pip install -r requirements.txt
+python3 -m pip3 install -r requirements.txt
 ```
 
 ## Required files
