@@ -26,17 +26,17 @@ def read_json(json_path:str)->dict:
 
 def read_chtbl(chtbl_path:str)->pd.DataFrame:
 	chtbl =  pd.read_csv(chtbl_path,
-				delim_whitespace=True,
-				index_col=0,
-				names=['code','lat','lon','dep'])
+			delim_whitespace=True,
+			index_col=0,
+			names=['code','lat','lon','dep'])
 	return chtbl
 
 def getarg():
 	parser = argparse.ArgumentParser(description='Paste-Up tool for seismograms')
 	parser.add_argument('--configure_file','-c',
-					 required=True,
-					 default='config.json',
-					 help='path to the configure file in "json"')
+			 # required=True,
+			 default='config.json',
+			 help='path to the configure file in "json"')
 	args = parser.parse_args()
 	return args
 
