@@ -25,8 +25,10 @@ python >= 3.10
 
 ```
 conda env create -f env.yml
+conda activate py310
 ```
 
+Or if you have already python-environment, then;
 ```
 python3 -m pip3 install -r requirements.txt
 ```
