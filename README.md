@@ -37,11 +37,11 @@ python3 -m pip3 install -r requirements.txt
 
 ### Station list
 
-	```txt
-	station_code lat lon height
-	station_code lat lon height
-	... 
-	```
+```txt
+station_code lat lon height
+station_code lat lon height
+... 
+```
 
 * station_code:  
 	観測点名
