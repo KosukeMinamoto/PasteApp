@@ -8,9 +8,9 @@ Last update: @23/09/29 by K.M.
 import argparse
 import os
 import json
-# from glob import glob
 import numpy as np
 import pandas as pd
+from geopy.geocoders import Nominatim
 from geopy.distance import Point,distance #,geodesic
 from obspy import read
 
@@ -26,15 +26,16 @@ def read_json(json_path:str)->dict:
 
 def read_chtbl(chtbl_path:str)->pd.DataFrame:
 	chtbl =  pd.read_csv(chtbl_path,
-					  delim_whitespace=True,
-					  index_col=0,
-					  names=['code','lat','lon','dep'])
+				delim_whitespace=True,
+				index_col=0,
+				names=['code','lat','lon','dep'])
 	return chtbl
 
 def getarg():
 	parser = argparse.ArgumentParser(description='Paste-Up tool for seismograms')
 	parser.add_argument('--configure_file','-c',
 					 required=True,
+					 default='config.json',
 					 help='path to the configure file in "json"')
 	args = parser.parse_args()
 	return args
@@ -55,6 +56,23 @@ class PasteApp(tk.Frame):
 		self.param = read_json(json_path)
 		plt.rcParams.update(self.param['mpl_rcparam'])
 
+		# Geoplot
+		geolocator = Nominatim(user_agent="geo_plot_example")
+		locations = self.param['additional_nominatim']
+		if len(locations) == 0:
+			self.name = None
+			pass
+		else:
+			coordinates = []
+			for loc in locations:
+				try:
+					loc_info = geolocator.geocode(loc)
+					coordinates += [(loc,loc_info.latitude,loc_info.longitude)]
+				except Exception as e:
+					print(str(e))
+					continue
+			self.name, self.alat, self.alon = zip(*coordinates)
+
 		# Channels & Waveform
 		self.chtbl = read_chtbl(self.param['channel_tbl'])
 		self.codes = self.chtbl.index.tolist()
@@ -71,13 +89,13 @@ class PasteApp(tk.Frame):
 		self._create_main_panel()
 		self.master.protocol("WM_DELETE_WINDOW", self.click_close)
 
-		# Plot initial paste-up
-		self.plot_pasteup()
+		self._update_main_panel()
 
 	def _create_main_panel(self):
 		self.main_frame = tk.Frame(self.master)
-		self.fig, self.ax = plt.subplots()
-		self.ax.yaxis.tick_right()
+		self.fig, self.axes = plt.subplots(2,1)	
+		self.axes[0].xaxis.tick_top()
+		self.axes[0].yaxis.tick_right()
 		self.fig_canvas = FigureCanvasTkAgg(self.fig, self.main_frame)
 		self.toolbar = NavigationToolbar2Tk(self.fig_canvas, self.main_frame)
 		self.fig_canvas.get_tk_widget().pack()
@@ -89,47 +107,47 @@ class PasteApp(tk.Frame):
 
 		# Latitude
 		lab_lat = tk.Label(text='Latitude')
-		lab_lat.place(relx=0.8,rely=0.02)
+		lab_lat.place(relx=0.9,rely=0.02)
 		self.ent_lat = tk.Entry(self.side_frame,fg='red',bg='white')
 		self.ent_lat.insert(tk.END,str(ilat))
 		self.ent_lat.pack(padx=10,pady=10,expand=True)
 		
 		# Longitude
 		lab_lon = tk.Label(text='Longitude')
-		lab_lon.place(relx=0.8,rely=0.16)
+		lab_lon.place(relx=0.9,rely=0.16)
 		self.ent_lon = tk.Entry(self.side_frame,fg='blue',bg='white')
 		self.ent_lon.insert(tk.END,str(ilon))
 		self.ent_lon.pack(padx=10,pady=10,expand=True)
 
 		# Depth
 		lab_dep = tk.Label(text='Depth')
-		lab_dep.place(relx=0.8,rely=0.3)
+		lab_dep.place(relx=0.9,rely=0.3)
 		self.ent_dep = tk.Entry(self.side_frame,fg='green',bg='white')
 		self.ent_dep.insert(tk.END,str(idep))
 		self.ent_dep.pack(padx=10,pady=10,expand=True)
 
 		# Bandpass Filter
 		lab_fmin = tk.Label(text='Freq. min')
-		lab_fmin.place(relx=0.8,rely=0.45)
+		lab_fmin.place(relx=0.9,rely=0.45)
 		self.fmin = tk.Entry(self.side_frame,fg='black',bg='white')
 		self.fmin.insert(tk.END,str(2))
 		self.fmin.pack(padx=10,pady=10,expand=True)
 
 		lab_fmax = tk.Label(text='Freq. max')
-		lab_fmax.place(relx=0.8,rely=0.59)
+		lab_fmax.place(relx=0.9,rely=0.59)
 		self.fmax = tk.Entry(self.side_frame,fg='black',bg='white')
 		self.fmax.insert(tk.END,str(16))
 		self.fmax.pack(padx=10,pady=10,expand=True)
 
 		lab_fnum = tk.Label(text='Num. of filters')
-		lab_fnum.place(relx=0.8,rely=0.73)
+		lab_fnum.place(relx=0.9,rely=0.73)
 		self.fnum = tk.Entry(self.side_frame,fg='black',bg='white')
 		self.fnum.insert(tk.END,str(1))
 		self.fnum.pack(padx=10,pady=10,expand=True)
 
 		btn = tk.Button(self.side_frame, 
 						text='PasteUp!!',
-						command=self.plot_pasteup,
+						command=self._update_main_panel,
 						width=15)
 		btn.pack(padx=10, pady=10, fill=tk.BOTH, expand=True)
 		self.side_frame.pack(side=tk.RIGHT, fill=tk.Y)
@@ -138,19 +156,34 @@ class PasteApp(tk.Frame):
 		station_point = Point(slat,slon,sdep)
 		hypocenter = Point(hlat,hlon,sdep)
 		dist_hori = distance(hypocenter,station_point).km
-		# dist = np.sqrt(dist_hori**2+(sdep-hdep)**2)
-		return dist_hori
+		dist = np.sqrt(dist_hori**2+(sdep-hdep)**2)
+		return dist #_hori
 
-
-	def plot_pasteup(self):
-		self.ax.clear()
-		hlat = self.ent_lat.get()
-		hlon = self.ent_lon.get()
-		hdep = self.ent_dep.get()
+	def _update_main_panel(self):
+		hlat = float(self.ent_lat.get())
+		hlon = float(self.ent_lon.get())
+		hdep = float(self.ent_dep.get())
 		fmin = float(self.fmin.get())
 		fmax = float(self.fmax.get())
 		fnum = int(self.fnum.get())
 
+		for ax in self.axes: ax.clear()
+		self.plot_geo_easy(hlat,hlon)
+		self.plot_pasteup(hlat,hlon,hdep,fmin,fmax,fnum)
+
+		self.fig_canvas.draw()
+
+	def plot_geo_easy(self,hlat,hlon):
+		# self.axes[1].scatter(self.chtbl['lon'],self.chtbl['lat'],c='k',marker='v')
+		for _, row in self.chtbl.iterrows():
+			self.axes[1].scatter(row['lon'], row['lat'], c='k', marker='v')
+			self.axes[1].annotate(row.name, (row['lon'], row['lat']))
+		self.axes[1].scatter(hlon,hlat,c='blue',marker='*',label='Epicenter')
+		if not self.name is None:
+			self.axes[1].scatter(self.alon,self.alat,c='red',marker='o',label=self.name)
+		self.axes[1].legend()
+
+	def plot_pasteup(self,hlat,hlon,hdep,fmin,fmax,fnum):
 		stream = self.stream.copy()
 		for _ in range(fnum):
 			stream.filter('bandpass',freqmin=fmin,freqmax=fmax,zerophase=True)
@@ -164,18 +197,17 @@ class PasteApp(tk.Frame):
 				y_posi = self._calc_distance_km(
 					station['lat'],station['lon'],station['dep'],
 					hlat,hlon,hdep
-					)*self.param["distance_ratio"]
+					)*self.param["distance_scale_rate"]
 				idx = self.param['components'].index(tr.stats.channel)
 				colo = self.param['line_colors'][idx]
-				self.ax.plot(tr.data+y_posi,c=colo)
-				self.ax.text(10, y_posi,tr.stats.station,weight='bold')
-		self.ax.yaxis.set_major_formatter(self._label_formatter)
-		self.ax.set_xlabel('Samples',weight='bold')
-		self.ax.set_ylabel('Distance [km]',weight='bold')
-		self.fig_canvas.draw()
+				self.axes[0].plot(tr.data+y_posi,c=colo)
+				self.axes[0].text(10, y_posi,tr.stats.station,weight='bold')
+		self.axes[0].yaxis.set_major_formatter(self._label_formatter)
+		self.axes[0].set_xlabel('Samples',weight='bold')
+		self.axes[0].set_ylabel('Distance [km]',weight='bold')
 
 	def _label_formatter(self,val,_):
-		return f'{val / self.param["distance_ratio"]:.0f}'
+		return f'{val / self.param["distance_scale_rate"]:.0f}'
 
 	def click_close(self):
 		if tk.messagebox.askokcancel("Alert", "Would you like to quit?"):
@@ -183,7 +215,8 @@ class PasteApp(tk.Frame):
 			quit()
 
 if __name__=='__main__':
-	json_path = 'config.json'
+	args = getarg()
+	json_path = args.configure_file
 	root = tk.Tk()
 	app = PasteApp(json_path,master=root)
 	app.mainloop()
